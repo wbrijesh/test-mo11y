@@ -1,0 +1,46 @@
+= test-mo11y
+
+Testing tools for mo11y observability backend.
+
+== Commands
+
+[source,bash]
+----
+make send-traces  # Send test traces to mo11y (localhost:4318)
+make query-db     # Query mo11y database and display results
+----
+
+== What It Does
+
+*send-traces*: Sends 4 test spans with 5 events using OpenTelemetry Go SDK
+
+* 1 root span with 2 events
+* 3 child spans (1 nested) with 3 events
+* Resource attributes: service.name="mo11y-test"
+* Span attributes: strings, numbers, booleans
+* Protocol: OTLP/HTTP with protobuf + gzip
+
+*query-db*: Queries mo11y database and displays:
+
+* All spans with trace_id, span_id, name, duration
+* All span events with parent span references
+* All span links (if any)
+
+== Prerequisites
+
+* mo11y server running on localhost:4318
+* mo11y database at `../mo11y/mo11y.duckdb`
+
+== Example
+
+[source,bash]
+----
+# Terminal 1: Start mo11y
+cd ~/projects/mo11y
+go run ./cmd/mo11y
+
+# Terminal 2: Send traces and query
+cd ~/projects/test-mo11y
+make send-traces
+make query-db
+----
